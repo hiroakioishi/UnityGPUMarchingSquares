@@ -34,7 +34,6 @@ public class GPUMarchingSquares : MonoBehaviour
     
     void OnEnable()
     {
-
         _vertexNum = _gridResolution * _gridResolution;
 
         _voxelBuffer = new ComputeBuffer(_vertexNum, Marshal.SizeOf(typeof(VoxelData)));
@@ -62,12 +61,6 @@ public class GPUMarchingSquares : MonoBehaviour
             _renderMat = new Material(_renderShader);
             _renderMat.hideFlags = HideFlags.DontSave;
         }
-
-    }
-
-    void Update()
-    {
-
     }
 
     void OnRenderObject()

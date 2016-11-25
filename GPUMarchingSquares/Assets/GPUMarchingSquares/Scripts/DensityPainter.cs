@@ -15,12 +15,10 @@ public class DensityPainter : MonoBehaviour
     [SerializeField, Range(1, 1024)]
     int _texHeight = 512;
 
-    //RenderTexture _densityTex;
-
     RenderTexture[] _buffers;
     
-    public float Thickness = 0.01f;
-    public float Alpha = 0.2f;
+    public float Thickness = 0.05f;
+    public float Alpha = 0.5f;
 
     [SerializeField]
     bool _isMouseLeftButtonDown = false;
@@ -93,9 +91,10 @@ public class DensityPainter : MonoBehaviour
             GL.Clear(false, true, new Color(0, 0, 0, 1));
             Graphics.SetRenderTarget(null);
         }
-        
+
+        float asp = (float)Screen.width / Screen.height;
         var mouseParams = new Vector4(
-        mp.x / (1.0f * Screen.width),
+        mp.x / (1.0f * Screen.width) * asp - (asp - 1.0f) * 0.5f,
         mp.y / (1.0f * Screen.height),
         (_isMouseLeftButtonDown || _isMouseRightButtonDown) ? Thickness : 0.0f,
          _isMouseRightButtonDown ? 0.0f : (_isMouseLeftButtonDown ? 1.0f : 0.0f)
@@ -107,8 +106,6 @@ public class DensityPainter : MonoBehaviour
         Graphics.Blit(_buffers[0], _buffers[1], _densityPaintMat, 0);
         
         SwapBuffer(ref _buffers[0], ref _buffers[1]);
-
-
     }
 
     void OnDestroy()
@@ -129,12 +126,12 @@ public class DensityPainter : MonoBehaviour
         {
             if (_buffers != null && _buffers.Length > 0)
             {
-                Rect rect = new Rect(0, 0, Screen.width, Screen.height);
+                float asp = (float)Screen.width / Screen.height;
+                Rect rect = new Rect((Screen.width - Screen.height) * 0.5f, 0, Screen.width * (1.0f/asp), Screen.height);
                 GUI.DrawTexture(rect, _buffers[0]);
             }
         }
     }
-    
 
     void SwapBuffer(ref RenderTexture ping, ref RenderTexture pong)
     {
